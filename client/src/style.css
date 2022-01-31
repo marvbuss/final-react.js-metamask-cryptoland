@@ -146,3 +146,33 @@ h1 {
     border: none;
     border-bottom: 2px solid white;
 }
+
+.transactions-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    justify-items: center;
+}
+
+.transactions-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.transactions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    justify-items: center;
+}
+
+.transaction-card {
+    background: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.transaction {
+    width: 100%;
+    background-color: none;
+}
