@@ -28,6 +28,8 @@ export const TransactionProvider = ({ children }) => {
         keyword: "",
         message: "",
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [transactionCount, setTransactionCount] = useState(null);
 
     const handleChange = ({ target }) => {
         setFormData((old) => ({
@@ -101,17 +103,52 @@ export const TransactionProvider = ({ children }) => {
             const transactionContract = getEthereumContract();
             const translateAmount = ethers.utils.parseEther(amount);
 
-            window.ethereum.request({
-                method: "eth_sendTransaction",
-                params: [
-                    {
-                        from: walletAddress,
-                        to: address,
-                        gas: "0x61A8", //25000 GWEI
-                        value: translateAmount._hex,
-                    },
-                ],
-            });
+            window.ethereum
+                .request({
+                    method: "eth_sendTransaction",
+                    params: [
+                        {
+                            from: walletAddress,
+                            to: address,
+                            gas: "0x61A8", //25000 GWEI
+                            value: translateAmount._hex,
+                        },
+                    ],
+                })
+                .then(() => {
+                    transactionContract
+                        .addToBlockchain(
+                            address,
+                            translateAmount,
+                            message,
+                            keyword
+                        )
+                        .then((transactionContract) => {
+                            console.log(transactionContract);
+                            const transactionHash = transactionContract;
+
+                            setIsLoading(true);
+                            console.log(`Loading - ${transactionHash.hash}`);
+                            transactionHash
+                                .wait()
+                                .then(() => {
+                                    setIsLoading(false);
+                                    console.log(
+                                        `Success- ${transactionHash.hash}`
+                                    );
+                                })
+                                .then(() => {
+                                    const transactionCount = transactionContract
+                                        .getTransactionCount()
+                                        .then((transactionCount) => {
+                                            setTransactionCount(
+                                                transactionCount.toNumber()
+                                            );
+                                        });
+                                });
+                        })
+                        .catch(console.log);
+                });
         } else {
             setConnectWalletBtnTxt("Please install MetaMask");
         }
