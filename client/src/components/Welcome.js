@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 import { useState, useEffect } from "react";
@@ -8,47 +7,23 @@ import { ethers } from "ethers";
 import { TransactionsContext } from "../context/TransactionContext";
 
 function Welcome() {
-    const { value } = useContext(TransactionsContext);
-    const [error, setError] = useState(false);
-    const errorMessage = "Something went wrong. Please try again!";
+    const {
+        walletAddress,
+        walletBalance,
+        connectWalletBtnTxt,
+        connectWalletHandler,
+        formData,
+        sendTransaction,
+        handleChange,
+    } = useContext(TransactionsContext);
 
-    const [walletAddress, setWalletAddress] = useState(null);
-    const [walletBalance, setWalletBalance] = useState(null);
-    const [connectWalletBtnTxt, setConnectWalletBtnTxt] =
-        useState("Connect Wallet");
+    const handleSubmit = (e) => {
+        const { address, amount, keyword, message } = formData;
+        e.preventDefault();
+        sendTransaction();
 
-    const connectWalletHandler = () => {
-        if (typeof window.ethereum !== "undefined") {
-            window.ethereum
-                .request({ method: "eth_requestAccounts" })
-                .then((result) => {
-                    //result gives back an array of accounts
-                    walletChangedHandler(result[0]);
-                });
-        } else {
-            setError(true);
-        }
+        if (!address || !amount || !keyword || !message) return;
     };
-
-    const walletChangedHandler = (wallet) => {
-        setWalletAddress(wallet);
-        walletBalanceHandler(wallet.toString());
-    };
-
-    const walletBalanceHandler = (wallet) => {
-        window.ethereum
-            .request({ method: "eth_getBalance", params: [wallet, "latest"] })
-            .then((result) => {
-                setWalletBalance(ethers.utils.formatEther(result));
-            });
-    };
-
-    const chainChangedHandler = () => {
-        window.location.reload();
-    };
-
-    window.ethereum.on("accountsChanged", walletChangedHandler);
-    window.ethereum.on("chainChanged", chainChangedHandler);
 
     return (
         <>
@@ -65,13 +40,15 @@ function Welcome() {
                         Explore the crypto world. Buy and sell <br />
                         cryptocurrencies.
                     </p>
-                    <button
-                        type="button"
-                        className="connect-wallet-btn"
-                        onClick={connectWalletHandler}
-                    >
-                        {connectWalletBtnTxt}
-                    </button>
+                    {!walletAddress && (
+                        <button
+                            type="button"
+                            className="connect-wallet-btn"
+                            onClick={connectWalletHandler}
+                        >
+                            {connectWalletBtnTxt}
+                        </button>
+                    )}
                 </div>
                 <div className="welcome-container-2">
                     <div className="eth-card">
@@ -86,19 +63,36 @@ function Welcome() {
                                 name="address"
                                 placeholder="Address to"
                                 type="text"
+                                onChange={({ target }) =>
+                                    handleChange({ target })
+                                }
                             />
                             <input
                                 name="amount"
                                 placeholder="Amount (ETH)"
                                 step="0.0001"
                                 type="number"
+                                onChange={({ target }) =>
+                                    handleChange({ target })
+                                }
+                            />
+                            <input
+                                name="keyword"
+                                placeholder="Enter Keyword"
+                                type="text"
+                                onChange={({ target }) =>
+                                    handleChange({ target })
+                                }
                             />
                             <input
                                 name="message"
                                 placeholder="Enter Message"
                                 type="text"
+                                onChange={({ target }) =>
+                                    handleChange({ target })
+                                }
                             />
-                            <button>Send Now</button>
+                            <button onClick={handleSubmit}>Send Now</button>
                         </form>
                     </div>
                 </div>
