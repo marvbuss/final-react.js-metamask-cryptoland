@@ -1,11 +1,14 @@
+import React, { useContext } from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
-import { Loader } from "./Loader";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
+import { TransactionsContext } from "../context/TransactionContext";
+
 function Welcome() {
+    const { value } = useContext(TransactionsContext);
     const [error, setError] = useState(false);
     const errorMessage = "Something went wrong. Please try again!";
 
