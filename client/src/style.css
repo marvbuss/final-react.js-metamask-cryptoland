@@ -151,15 +151,11 @@ h1 {
     display: flex;
     width: 100%;
     justify-content: center;
-    justify-items: center;
-}
-
-.transactions-wrapper {
-    display: flex;
+    align-items: center;
     flex-direction: column;
 }
 
-.transactions {
+.transactions-wrapper {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -170,9 +166,29 @@ h1 {
     background: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
     margin: 1rem;
     padding: 1rem;
+    border-radius: 1rem;
 }
 
 .transaction {
+    padding: 1rem;
+}
+
+.cryptoland-img {
     width: 100%;
-    background-color: none;
+    height: 300px;
+    object-fit: cover;
+}
+
+.footer-container {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1rem;
+}
+
+.footer-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }

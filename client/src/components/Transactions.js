@@ -1,10 +1,8 @@
 import React, { useContext } from "react";
-import {
-    TransactionContext,
-    TransactionsContext,
-} from "../context/TransactionContext";
+import { TransactionsContext } from "../context/TransactionContext";
 
 import { dummyData } from "../utils/dummyData";
+import Cryptoland from "./Cryptoland";
 
 const TransactionCard = ({
     address,
@@ -33,8 +31,8 @@ const TransactionCard = ({
                     <p>To: {addressTo}</p>
                 </a>
                 <p>Amount: {amount}</p>
-                <p>Message: {message}</p>
                 <p>{timestamp}</p>
+                <Cryptoland />
             </div>
         </div>
     );
@@ -45,19 +43,15 @@ function Transactions() {
     return (
         <>
             <div className="transactions-container">
+                {walletAddress ? (
+                    <h1>Latest Transactions</h1>
+                ) : (
+                    <h1>Connect your Wallet to see the Latest Transactions</h1>
+                )}
                 <div className="transactions-wrapper">
-                    {walletAddress ? (
-                        <h1>Latest Transactions</h1>
-                    ) : (
-                        <h1>
-                            Connect your account to see the Latest Transactions
-                        </h1>
-                    )}
-                    <div className="transactions">
-                        {dummyData.reverse().map((transaction, i) => {
-                            return <TransactionCard key={i} {...transaction} />;
-                        })}
-                    </div>
+                    {dummyData.reverse().map((transaction, i) => {
+                        return <TransactionCard key={i} {...transaction} />;
+                    })}
                 </div>
             </div>
         </>

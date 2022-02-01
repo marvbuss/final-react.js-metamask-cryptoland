@@ -62,6 +62,8 @@ export const TransactionProvider = ({ children }) => {
             .catch(console.log);
     };
 
+    const checkTransactions = () => {};
+
     const connectWalletHandler = () => {
         if (typeof window.ethereum !== "undefined") {
             window.ethereum
@@ -138,7 +140,7 @@ export const TransactionProvider = ({ children }) => {
                                     );
                                 })
                                 .then(() => {
-                                    const transactionCount = transactionContract
+                                    transactionContract
                                         .getTransactionCount()
                                         .then((transactionCount) => {
                                             setTransactionCount(
