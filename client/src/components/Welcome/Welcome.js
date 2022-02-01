@@ -26,26 +26,25 @@ function Welcome() {
         <>
             <div className="welcome-container">
                 <div className="welcome-container-1">
-                    <h1>
-                        Transfer Crypto
-                        <br />
-                        across
-                        <br />
-                        the world
-                    </h1>
-                    <p>
-                        Discover the crypto world. Make your payments <br />
-                        with cryptocurrency via Crypto Land.
-                    </p>
-                    {!walletAddress && (
-                        <button
-                            type="button"
-                            className="connect-wallet-btn"
-                            onClick={connectWalletHandler}
-                        >
-                            Connect Wallet
-                        </button>
-                    )}
+                    <div className="welcome-info">
+                        <h1>
+                            Transfer Crypto <br /> across the world
+                        </h1>
+                        <p>
+                            Discover the crypto world. <br />
+                            Make your payments with cryptocurrency via Crypto
+                            Land.
+                        </p>
+                        {!walletAddress && (
+                            <button
+                                type="button"
+                                className="connect-wallet-btn"
+                                onClick={connectWalletHandler}
+                            >
+                                Connect Wallet
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <div className="welcome-container-2">
                     <div className="eth-card">

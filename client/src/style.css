@@ -62,10 +62,22 @@ h1 {
 
 .welcome-container-1 {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex-direction: column;
     margin: 2rem;
     padding: 2rem;
+}
+
+.welcome-info {
+    width: 75%;
+}
+
+.welcome-container-1 h1 {
+    font-size: 4rem;
+}
+
+.welcome-container-1 p {
+    font-size: 1.5rem;
 }
 
 .connect-wallet-btn {
@@ -77,17 +89,17 @@ h1 {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
-    margin: 2rem;
+    margin-top: 2rem;
+    width: 100%;
 }
 
 .welcome-container-2 {
     margin: 3rem;
     padding: 3rem;
-}
-
-.eth-card-container {
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 .eth-card {
@@ -142,9 +154,13 @@ h1 {
     width: 400px;
 }
 
+.transaction-form button {
+    border: 2px solid #716b94;
+}
+
 .transaction-form input {
     border: none;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #716b94;
 }
 
 .transactions-container {
