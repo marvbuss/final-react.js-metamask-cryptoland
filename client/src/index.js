@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { TransactionProvider } from "./context/TransactionContext";
+import { CryptolandProvider } from "./context/CryptolandContext";
 
 ReactDOM.render(
-    <TransactionProvider>
+    <CryptolandProvider>
         <React.StrictMode>
             <App />
         </React.StrictMode>
-    </TransactionProvider>,
+    </CryptolandProvider>,
     document.getElementById("root")
 );

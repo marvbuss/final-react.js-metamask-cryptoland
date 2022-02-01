@@ -1,15 +1,13 @@
 import React, { useContext } from "react";
-import { TransactionsContext } from "../context/TransactionContext";
-
-import Cryptoland from "./Cryptoland";
+import { CryptolandsContext } from "../../context/CryptolandContext";
+import Cryptoland from "../Cryptoland/Cryptoland";
 
 const TransactionCard = ({
     addressFrom,
     addressTo,
-    timestamp,
-    message,
+    payment_reference,
     amount,
-    url,
+    timestamp,
 }) => {
     return (
         <div className="transaction-card">
@@ -29,6 +27,7 @@ const TransactionCard = ({
                     <p>To: {addressTo}</p>
                 </a>
                 <p>Amount: {amount}</p>
+                <p>Reference: {payment_reference}</p>
                 <p>{timestamp}</p>
                 <Cryptoland />
             </div>
@@ -36,9 +35,9 @@ const TransactionCard = ({
     );
 };
 
-function Transactions() {
-    const { walletAddress } = useContext(TransactionsContext);
-    const { transactions } = useContext(TransactionsContext);
+function Transfers() {
+    const { walletAddress } = useContext(CryptolandsContext);
+    const { transactions } = useContext(CryptolandsContext);
     return (
         <>
             <div className="transactions-container">
@@ -57,4 +56,4 @@ function Transactions() {
     );
 }
 
-export default Transactions;
+export default Transfers;

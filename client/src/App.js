@@ -1,5 +1,5 @@
-import { Navbar, Welcome, Footer, Transactions } from "./components";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { Navbar, Welcome, Footer, Transfers } from "./components";
+import { BrowserRouter } from "react-router-dom";
 import "./style.css";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
                 <Navbar />
             </BrowserRouter>
             <Welcome />
-            <Transactions />
+            <Transfers />
             <Footer />
         </>
     );

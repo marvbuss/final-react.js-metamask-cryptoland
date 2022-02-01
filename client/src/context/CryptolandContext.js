@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-
 import { contractABI, contractAddress } from "../utils/constants";
 
-export const TransactionsContext = React.createContext();
+export const CryptolandsContext = React.createContext();
 
 const getEthereumContract = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const transactionContract = new ethers.Contract(
+    const cryptolandContract = new ethers.Contract(
         contractAddress,
         contractABI,
         signer
     );
 
-    return transactionContract;
+    return cryptolandContract;
 };
 
-export const TransactionProvider = ({ children }) => {
+export const CryptolandProvider = ({ children }) => {
     const [walletAddress, setWalletAddress] = useState(null);
     const [walletBalance, setWalletBalance] = useState(null);
     const [connectWalletBtnTxt, setConnectWalletBtnTxt] =
@@ -25,8 +24,7 @@ export const TransactionProvider = ({ children }) => {
     const [formData, setFormData] = useState({
         address: "",
         amount: "",
-        keyword: "",
-        message: "",
+        payment_reference: "",
     });
     const [isLoading, setIsLoading] = useState(false);
     const [transactions, setTransactions] = useState([]);
@@ -38,12 +36,16 @@ export const TransactionProvider = ({ children }) => {
         }));
     };
 
-    const getAllTransactions = async () => {
+    useEffect(() => {
+        checkIfWalletIsConnected();
+    }, [walletAddress]);
+
+    const getAllTransfers = async () => {
         try {
             if (typeof window.ethereum !== "undefined") {
-                const transactionContract = getEthereumContract();
+                const cryptolandContract = getEthereumContract();
                 const allTransactions =
-                    await transactionContract.getAllTransactions();
+                    await cryptolandContract.getAllPayments();
                 console.log(allTransactions);
                 const hexNumber = 10 ** 18;
                 const structuredTransactions = allTransactions.map(
@@ -53,7 +55,7 @@ export const TransactionProvider = ({ children }) => {
                         timestamp: new Date(
                             transaction.timestamp.toNumber() * 1000
                         ).toLocaleString("de-AT", { timeZone: "UTC" }),
-                        message: transaction.message,
+                        payment_reference: transaction.payment_reference,
                         amount: parseInt(transaction.amount._hex) / hexNumber,
                     })
                 );
@@ -67,10 +69,6 @@ export const TransactionProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        checkIfWalletIsConnected();
-    }, [walletAddress]);
-
     const checkIfWalletIsConnected = () => {
         if (typeof window.ethereum == "undefined")
             return setConnectWalletBtnTxt("Please install MetaMask.");
@@ -83,7 +81,7 @@ export const TransactionProvider = ({ children }) => {
                 if (result.length) {
                     setWalletAddress(result[0]);
 
-                    getAllTransactions();
+                    getAllTransfers();
                 } else {
                     console.log("No accounts found");
                 }
@@ -128,8 +126,8 @@ export const TransactionProvider = ({ children }) => {
 
     const sendTransaction = () => {
         if (typeof window.ethereum !== "undefined") {
-            const { address, amount, keyword, message } = formData;
-            const transactionContract = getEthereumContract();
+            const { address, amount, payment_reference } = formData;
+            const cryptolandContract = getEthereumContract();
             const translateAmount = ethers.utils.parseEther(amount);
 
             window.ethereum
@@ -145,25 +143,24 @@ export const TransactionProvider = ({ children }) => {
                     ],
                 })
                 .then(() => {
-                    transactionContract
-                        .addToBlockchain(
+                    cryptolandContract
+                        .initiateTransfer(
                             address,
                             translateAmount,
-                            message,
-                            keyword
+                            payment_reference
                         )
-                        .then((transactionContract) => {
-                            console.log(transactionContract);
-                            const transactionHash = transactionContract;
+                        .then((cryptolandContract) => {
+                            console.log(cryptolandContract);
+                            const cryptolandHash = cryptolandContract;
 
                             setIsLoading(true);
-                            console.log(`Loading - ${transactionHash.hash}`);
-                            transactionHash
+                            console.log(`Loading - ${cryptolandHash.hash}`);
+                            cryptolandHash
                                 .wait()
                                 .then(() => {
                                     setIsLoading(false);
                                     console.log(
-                                        `Success- ${transactionHash.hash}`
+                                        `Success- ${cryptolandHash.hash}`
                                     );
                                 })
                                 .then(() => {
@@ -178,7 +175,7 @@ export const TransactionProvider = ({ children }) => {
     };
 
     return (
-        <TransactionsContext.Provider
+        <CryptolandsContext.Provider
             value={{
                 walletAddress,
                 walletBalance,
@@ -192,6 +189,6 @@ export const TransactionProvider = ({ children }) => {
             }}
         >
             {children}
-        </TransactionsContext.Provider>
+        </CryptolandsContext.Provider>
     );
 };

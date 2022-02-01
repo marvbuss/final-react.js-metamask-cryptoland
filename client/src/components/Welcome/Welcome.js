@@ -1,10 +1,8 @@
 import React, { useContext } from "react";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
-import { useState, useEffect } from "react";
-import { ethers } from "ethers";
 
-import { TransactionsContext } from "../context/TransactionContext";
+import { CryptolandsContext } from "../context/CryptolandContext";
 
 function Welcome() {
     const {
@@ -15,14 +13,14 @@ function Welcome() {
         formData,
         sendTransaction,
         handleChange,
-    } = useContext(TransactionsContext);
+    } = useContext(CryptolandsContext);
 
     const handleSubmit = (e) => {
-        const { address, amount, keyword, message } = formData;
+        const { address, amount, payment_reference } = formData;
         e.preventDefault();
         sendTransaction();
 
-        if (!address || !amount || !keyword || !message) return;
+        if (!address || !amount || !payment_reference) return;
     };
 
     return (
@@ -38,7 +36,7 @@ function Welcome() {
                     </h1>
                     <p>
                         Discover the crypto world. Make your payments <br />
-                        with cryptocurrencies via Crypto Land.
+                        with cryptocurrency via Crypto Land.
                     </p>
                     {!walletAddress && (
                         <button
@@ -77,16 +75,8 @@ function Welcome() {
                                 }
                             />
                             <input
-                                name="keyword"
-                                placeholder="Enter Keyword"
-                                type="text"
-                                onChange={({ target }) =>
-                                    handleChange({ target })
-                                }
-                            />
-                            <input
-                                name="message"
-                                placeholder="Enter Message"
+                                name="payment_reference"
+                                placeholder="Enter Reference"
                                 type="text"
                                 onChange={({ target }) =>
                                     handleChange({ target })
