@@ -29,7 +29,7 @@ export const TransactionProvider = ({ children }) => {
         message: "",
     });
     const [isLoading, setIsLoading] = useState(false);
-    const [transactionCount, setTransactionCount] = useState(null);
+    const [transactions, setTransactions] = useState([]);
 
     const handleChange = ({ target }) => {
         setFormData((old) => ({
@@ -38,9 +38,38 @@ export const TransactionProvider = ({ children }) => {
         }));
     };
 
+    const getAllTransactions = async () => {
+        try {
+            if (typeof window.ethereum !== "undefined") {
+                const transactionContract = getEthereumContract();
+                const allTransactions =
+                    await transactionContract.getAllTransactions();
+                console.log(allTransactions);
+                const hexNumber = 10 ** 18;
+                const structuredTransactions = allTransactions.map(
+                    (transaction) => ({
+                        addressTo: transaction.receiver,
+                        addressFrom: transaction.sender,
+                        timestamp: new Date(
+                            transaction.timestamp.toNumber() * 1000
+                        ).toLocaleString("de-AT", { timeZone: "UTC" }),
+                        message: transaction.message,
+                        amount: parseInt(transaction.amount._hex) / hexNumber,
+                    })
+                );
+                console.log(structuredTransactions);
+                setTransactions(structuredTransactions);
+            } else {
+                setConnectWalletBtnTxt("Please install MetaMask");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
         checkIfWalletIsConnected();
-    }, []);
+    }, [walletAddress]);
 
     const checkIfWalletIsConnected = () => {
         if (typeof window.ethereum == "undefined")
@@ -54,15 +83,13 @@ export const TransactionProvider = ({ children }) => {
                 if (result.length) {
                     setWalletAddress(result[0]);
 
-                    // getAllTransactions();
+                    getAllTransactions();
                 } else {
                     console.log("No accounts found");
                 }
             })
             .catch(console.log);
     };
-
-    const checkTransactions = () => {};
 
     const connectWalletHandler = () => {
         if (typeof window.ethereum !== "undefined") {
@@ -140,13 +167,7 @@ export const TransactionProvider = ({ children }) => {
                                     );
                                 })
                                 .then(() => {
-                                    transactionContract
-                                        .getTransactionCount()
-                                        .then((transactionCount) => {
-                                            setTransactionCount(
-                                                transactionCount.toNumber()
-                                            );
-                                        });
+                                    window.location.reload();
                                 });
                         })
                         .catch(console.log);
@@ -166,6 +187,8 @@ export const TransactionProvider = ({ children }) => {
                 formData,
                 handleChange,
                 sendTransaction,
+                transactions,
+                isLoading,
             }}
         >
             {children}

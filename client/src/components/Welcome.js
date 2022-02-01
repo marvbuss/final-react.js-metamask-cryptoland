@@ -30,15 +30,15 @@ function Welcome() {
             <div className="welcome-wrapper">
                 <div className="welcome-container-1">
                     <h1>
-                        Send Crypto
+                        Transfer Crypto
                         <br />
                         across
                         <br />
                         the world
                     </h1>
                     <p>
-                        Explore the crypto world. Buy and sell <br />
-                        cryptocurrencies.
+                        Discover the crypto world. Make your payments <br />
+                        with cryptocurrencies via Crypto Land.
                     </p>
                     {!walletAddress && (
                         <button

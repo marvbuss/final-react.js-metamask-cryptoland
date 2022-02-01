@@ -1,30 +1,28 @@
 import React, { useContext } from "react";
 import { TransactionsContext } from "../context/TransactionContext";
 
-import { dummyData } from "../utils/dummyData";
 import Cryptoland from "./Cryptoland";
 
 const TransactionCard = ({
-    address,
+    addressFrom,
+    addressTo,
     timestamp,
     message,
-    keyword,
     amount,
-    addressTo,
     url,
 }) => {
     return (
         <div className="transaction-card">
             <div className="transaction">
                 <a
-                    href={`https://ropsten.etherscan.io/address/${address}`}
+                    href={`https://ropsten.etherscan.io/address/${addressFrom}`}
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <p>From: {address}</p>
+                    <p>From: {addressFrom}</p>
                 </a>
                 <a
-                    href={`https://ropsten.etherscan.io/address/${address}`}
+                    href={`https://ropsten.etherscan.io/address/${addressTo}`}
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -40,16 +38,17 @@ const TransactionCard = ({
 
 function Transactions() {
     const { walletAddress } = useContext(TransactionsContext);
+    const { transactions } = useContext(TransactionsContext);
     return (
         <>
             <div className="transactions-container">
                 {walletAddress ? (
-                    <h1>Latest Transactions</h1>
+                    <h1>Latest Transfers</h1>
                 ) : (
-                    <h1>Connect your Wallet to see the Latest Transactions</h1>
+                    <h1>Connect your Wallet to see the Latest Transfers</h1>
                 )}
                 <div className="transactions-wrapper">
-                    {dummyData.reverse().map((transaction, i) => {
+                    {transactions.reverse().map((transaction, i) => {
                         return <TransactionCard key={i} {...transaction} />;
                     })}
                 </div>
