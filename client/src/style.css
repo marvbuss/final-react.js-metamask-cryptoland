@@ -55,7 +55,7 @@ h1 {
     text-decoration: none;
 }
 
-.welcome-wrapper {
+.welcome-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
@@ -163,9 +163,9 @@ h1 {
 }
 
 .transaction-card {
-    background: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
     margin: 1rem;
     padding: 1rem;
+    border: 2px solid #716b94;
     border-radius: 1rem;
 }
 

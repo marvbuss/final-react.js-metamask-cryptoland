@@ -19,15 +19,14 @@ const getEthereumContract = () => {
 export const CryptolandProvider = ({ children }) => {
     const [walletAddress, setWalletAddress] = useState(null);
     const [walletBalance, setWalletBalance] = useState(null);
-    const [connectWalletBtnTxt, setConnectWalletBtnTxt] =
-        useState("Connect Wallet");
+    const [metaMask, setMetaMask] = useState(null);
     const [formData, setFormData] = useState({
         address: "",
         amount: "",
         payment_reference: "",
     });
     const [isLoading, setIsLoading] = useState(false);
-    const [transactions, setTransactions] = useState([]);
+    const [transfers, setTransfers] = useState([]);
 
     const handleChange = ({ target }) => {
         setFormData((old) => ({
@@ -38,40 +37,10 @@ export const CryptolandProvider = ({ children }) => {
 
     useEffect(() => {
         checkIfWalletIsConnected();
-    }, [walletAddress]);
-
-    const getAllTransfers = async () => {
-        try {
-            if (typeof window.ethereum !== "undefined") {
-                const cryptolandContract = getEthereumContract();
-                const allTransactions =
-                    await cryptolandContract.getAllPayments();
-                console.log(allTransactions);
-                const hexNumber = 10 ** 18;
-                const structuredTransactions = allTransactions.map(
-                    (transaction) => ({
-                        addressTo: transaction.receiver,
-                        addressFrom: transaction.sender,
-                        timestamp: new Date(
-                            transaction.timestamp.toNumber() * 1000
-                        ).toLocaleString("de-AT", { timeZone: "UTC" }),
-                        payment_reference: transaction.payment_reference,
-                        amount: parseInt(transaction.amount._hex) / hexNumber,
-                    })
-                );
-                console.log(structuredTransactions);
-                setTransactions(structuredTransactions);
-            } else {
-                setConnectWalletBtnTxt("Please install MetaMask");
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    }, []);
 
     const checkIfWalletIsConnected = () => {
-        if (typeof window.ethereum == "undefined")
-            return setConnectWalletBtnTxt("Please install MetaMask.");
+        if (typeof window.ethereum == "undefined") return setMetaMask(false);
 
         window.ethereum
             .request({
@@ -89,6 +58,31 @@ export const CryptolandProvider = ({ children }) => {
             .catch(console.log);
     };
 
+    const getAllTransfers = async () => {
+        try {
+            if (typeof window.ethereum !== "undefined") {
+                const cryptolandContract = getEthereumContract();
+                const getAllPayments =
+                    await cryptolandContract.getAllPayments();
+                const hexNumber = 10 ** 18;
+                const structuredTransfers = getAllPayments.map((payment) => ({
+                    addressTo: payment.receiver,
+                    addressFrom: payment.sender,
+                    timestamp: new Date(
+                        payment.timestamp.toNumber() * 1000
+                    ).toLocaleString("de-AT", { timeZone: "UTC" }),
+                    payment_reference: payment.payment_reference,
+                    amount: parseInt(payment.amount._hex) / hexNumber,
+                }));
+                setTransfers(structuredTransfers);
+            } else {
+                setMetaMask(false);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     const connectWalletHandler = () => {
         if (typeof window.ethereum !== "undefined") {
             window.ethereum
@@ -99,7 +93,7 @@ export const CryptolandProvider = ({ children }) => {
                 })
                 .catch(console.log);
         } else {
-            setConnectWalletBtnTxt("Please install MetaMask");
+            setMetaMask(false);
         }
     };
 
@@ -124,7 +118,7 @@ export const CryptolandProvider = ({ children }) => {
     window.ethereum.on("accountsChanged", walletChangedHandler);
     window.ethereum.on("chainChanged", chainChangedHandler);
 
-    const sendTransaction = () => {
+    const initiateTransferHandler = () => {
         if (typeof window.ethereum !== "undefined") {
             const { address, amount, payment_reference } = formData;
             const cryptolandContract = getEthereumContract();
@@ -170,7 +164,7 @@ export const CryptolandProvider = ({ children }) => {
                         .catch(console.log);
                 });
         } else {
-            setConnectWalletBtnTxt("Please install MetaMask");
+            setMetaMask(false);
         }
     };
 
@@ -179,13 +173,13 @@ export const CryptolandProvider = ({ children }) => {
             value={{
                 walletAddress,
                 walletBalance,
-                connectWalletBtnTxt,
-                connectWalletHandler,
+                metaMask,
                 formData,
-                handleChange,
-                sendTransaction,
-                transactions,
+                transfers,
                 isLoading,
+                handleChange,
+                connectWalletHandler,
+                initiateTransferHandler,
             }}
         >
             {children}

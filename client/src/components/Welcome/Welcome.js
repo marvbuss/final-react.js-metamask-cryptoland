@@ -2,30 +2,29 @@ import React, { useContext } from "react";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 
-import { CryptolandsContext } from "../context/CryptolandContext";
+import { CryptolandsContext } from "../../context/CryptolandContext";
 
 function Welcome() {
     const {
         walletAddress,
         walletBalance,
-        connectWalletBtnTxt,
-        connectWalletHandler,
         formData,
-        sendTransaction,
         handleChange,
+        connectWalletHandler,
+        initiateTransferHandler,
     } = useContext(CryptolandsContext);
 
     const handleSubmit = (e) => {
         const { address, amount, payment_reference } = formData;
         e.preventDefault();
-        sendTransaction();
+        initiateTransferHandler();
 
         if (!address || !amount || !payment_reference) return;
     };
 
     return (
         <>
-            <div className="welcome-wrapper">
+            <div className="welcome-container">
                 <div className="welcome-container-1">
                     <h1>
                         Transfer Crypto
@@ -44,7 +43,7 @@ function Welcome() {
                             className="connect-wallet-btn"
                             onClick={connectWalletHandler}
                         >
-                            {connectWalletBtnTxt}
+                            Connect Wallet
                         </button>
                     )}
                 </div>
@@ -76,7 +75,7 @@ function Welcome() {
                             />
                             <input
                                 name="payment_reference"
-                                placeholder="Enter Reference"
+                                placeholder="Enter Payment Reference"
                                 type="text"
                                 onChange={({ target }) =>
                                     handleChange({ target })

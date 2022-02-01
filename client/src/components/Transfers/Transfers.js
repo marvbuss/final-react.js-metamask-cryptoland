@@ -37,7 +37,7 @@ const TransactionCard = ({
 
 function Transfers() {
     const { walletAddress } = useContext(CryptolandsContext);
-    const { transactions } = useContext(CryptolandsContext);
+    const { transfers } = useContext(CryptolandsContext);
     return (
         <>
             <div className="transactions-container">
@@ -47,8 +47,8 @@ function Transfers() {
                     <h1>Connect your Wallet to see the Latest Transfers</h1>
                 )}
                 <div className="transactions-wrapper">
-                    {transactions.reverse().map((transaction, i) => {
-                        return <TransactionCard key={i} {...transaction} />;
+                    {transfers.reverse().map((transfer, i) => {
+                        return <TransactionCard key={i} {...transfer} />;
                     })}
                 </div>
             </div>
