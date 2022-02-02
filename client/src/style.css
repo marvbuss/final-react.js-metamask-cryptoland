@@ -87,15 +87,15 @@ h1 {
     outline: none;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
     text-decoration: none;
     margin-top: 2rem;
     width: 100%;
+    font-size: 1rem;
 }
 
 .welcome-container-2 {
-    margin: 3rem;
-    padding: 3rem;
+    margin: 2rem;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -151,47 +151,49 @@ h1 {
     flex-direction: column;
     margin-top: 1rem;
     row-gap: 1rem;
-    width: 400px;
+    width: 500px;
 }
 
 .transaction-form button {
     border: 2px solid #716b94;
+    font-size: 1rem;
 }
 
 .transaction-form input {
     border: none;
     border-bottom: 2px solid #716b94;
+    font-size: 1rem;
 }
 
-.transactions-container {
+.transfer-container {
     margin: 2rem;
 }
 
-.transactions-container h1 {
+.transfer-container h1 {
     text-align: center;
 }
 
-.transactions-wrapper {
+.transfer-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     margin: 2rem;
 }
 
-.transaction-card {
+.payment-card {
     margin: 1rem;
     padding: 1rem;
     border: 2px solid #716b94;
     border-radius: 1rem;
 }
 
-.transaction-input {
+.payment-input {
     padding: 1rem;
     display: flex;
     flex-direction: column;
     row-gap: 0.25rem;
 }
 
-.transaction-input p {
+.payment-input p {
     word-wrap: break-word;
 }
 
@@ -213,4 +215,18 @@ h1 {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.seperator-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.seperator {
+    height: 1px;
+    background-color: #79e7e7;
+    width: 75%;
 }

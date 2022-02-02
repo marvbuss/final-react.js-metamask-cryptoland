@@ -31,7 +31,7 @@ function Welcome() {
                             Transfer Crypto <br /> across the world
                         </h1>
                         <p>
-                            Discover the crypto world and join the movement.
+                            Discover the Crypto World and join the movement.
                             <br />
                             Make your payments with cryptocurrency via Crypto
                             Land.
@@ -81,7 +81,7 @@ function Welcome() {
                                     handleChange({ target })
                                 }
                             />
-                            <button onClick={handleSubmit}>Send Now</button>
+                            <button onClick={handleSubmit}>Transfer Now</button>
                         </form>
                     </div>
                 </div>

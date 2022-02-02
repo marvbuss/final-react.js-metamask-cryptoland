@@ -1,4 +1,4 @@
-import { Navbar, Welcome, Footer, Transfers } from "./components";
+import { Navbar, Welcome, Footer, Transfers, Seperator } from "./components";
 import { BrowserRouter } from "react-router-dom";
 import "./style.css";
 
@@ -7,9 +7,11 @@ function App() {
         <>
             <BrowserRouter>
                 <Navbar />
+                <Seperator />
             </BrowserRouter>
             <Welcome />
             <Transfers />
+            <Seperator />
             <Footer />
         </>
     );

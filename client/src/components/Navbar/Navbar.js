@@ -11,8 +11,8 @@ function Navbar() {
                     <NavLink to="/community" className="navbar-link">
                         Community
                     </NavLink>
-                    <NavLink to="/nfts" className="navbar-link">
-                        NFTs
+                    <NavLink to="/nft" className="navbar-link">
+                        NFT
                     </NavLink>
                     <NavLink to="/roadmap" className="navbar-link">
                         Roadmap
