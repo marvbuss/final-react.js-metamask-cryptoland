@@ -5,6 +5,7 @@ import { contractABI, contractAddress } from "../utils/constants";
 export const CryptolandsContext = React.createContext();
 
 const { ethereum } = window;
+const hexNumberHelper = 10 ** 18;
 
 const getEthereumContract = () => {
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -27,7 +28,6 @@ export const CryptolandProvider = ({ children }) => {
         amount: "",
         payment_reference: "",
     });
-    const [isConnecting, setIsConnecting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [transfers, setTransfers] = useState([]);
 
@@ -39,8 +39,17 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     useEffect(() => {
+        checkIfMetaMaskIsInstalled();
         checkIfWalletIsConnected();
     }, []);
+
+    const checkIfMetaMaskIsInstalled = () => {
+        if (typeof ethereum == "undefined") {
+            return setMetaMask(false);
+        } else {
+            return setMetaMask(true);
+        }
+    };
 
     const checkIfWalletIsConnected = () => {
         if (typeof ethereum == "undefined") return setMetaMask(false);
@@ -51,7 +60,7 @@ export const CryptolandProvider = ({ children }) => {
             })
             .then((result) => {
                 if (result.length) {
-                    setWalletAddress(result[0]);
+                    walletChangedHandler(result[0]);
 
                     getAllTransfers();
                 } else {
@@ -63,41 +72,33 @@ export const CryptolandProvider = ({ children }) => {
 
     const getAllTransfers = async () => {
         try {
-            if (typeof ethereum !== "undefined") {
-                const cryptolandContract = getEthereumContract();
-                const getAllPayments =
-                    await cryptolandContract.getAllPayments();
-                const hexNumber = 10 ** 18;
-                const structuredTransfers = getAllPayments.map((payment) => ({
-                    addressTo: payment.receiver,
-                    addressFrom: payment.sender,
-                    timestamp: new Date(
-                        payment.timestamp.toNumber() * 1000
-                    ).toLocaleString("de-AT", { timeZone: "UTC" }),
-                    payment_reference: payment.payment_reference,
-                    amount: parseInt(payment.amount._hex) / hexNumber,
-                }));
-                setTransfers(structuredTransfers);
-            } else {
-                setMetaMask(false);
-            }
+            if (typeof ethereum == "undefined") return setMetaMask(false);
+            const cryptolandContract = getEthereumContract();
+            const getAllPayments = await cryptolandContract.getAllPayments();
+            const structuredTransfers = getAllPayments.map((payment) => ({
+                addressTo: payment.receiver,
+                addressFrom: payment.sender,
+                timestamp: new Date(
+                    payment.timestamp.toNumber() * 1000
+                ).toLocaleString("de-AT", { timeZone: "UTC" }),
+                payment_reference: payment.payment_reference,
+                amount: parseInt(payment.amount._hex) / hexNumberHelper,
+            }));
+            setTransfers(structuredTransfers);
         } catch (err) {
             console.log(err);
         }
     };
 
     const connectWalletHandler = () => {
-        if (typeof ethereum !== "undefined") {
-            ethereum
-                .request({ method: "eth_requestAccounts" })
-                .then((result) => {
-                    //result gives back an array of accounts
-                    walletChangedHandler(result[0]);
-                })
-                .catch(console.log);
-        } else {
-            setMetaMask(false);
-        }
+        if (typeof ethereum == "undefined") return setMetaMask(false);
+        ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((result) => {
+                //result gives back an array of accounts
+                walletChangedHandler(result[0]);
+            })
+            .catch(console.log);
     };
 
     const walletChangedHandler = (wallet) => {
@@ -115,53 +116,48 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const initiateTransferHandler = () => {
-        if (typeof ethereum !== "undefined") {
-            const { address, amount, payment_reference } = formData;
-            const cryptolandContract = getEthereumContract();
-            const translateAmount = ethers.utils.parseEther(amount);
+        if (typeof ethereum == "undefined") return setMetaMask(false);
+        const { address, amount, payment_reference } = formData;
+        const cryptolandContract = getEthereumContract();
+        const translateAmount = ethers.utils.parseEther(amount);
 
-            ethereum
-                .request({
-                    method: "eth_sendTransaction",
-                    params: [
-                        {
-                            from: walletAddress,
-                            to: address,
-                            gas: "0x61A8", //25000 GWEI
-                            value: translateAmount._hex,
-                        },
-                    ],
-                })
-                .then(() => {
-                    cryptolandContract
-                        .initiateTransfer(
-                            address,
-                            translateAmount,
-                            payment_reference
-                        )
-                        .then((cryptolandContract) => {
-                            console.log(cryptolandContract);
-                            const cryptolandHash = cryptolandContract;
+        ethereum
+            .request({
+                method: "eth_sendTransaction",
+                params: [
+                    {
+                        from: walletAddress,
+                        to: address,
+                        gas: "0x61A8", //25000 GWEI
+                        value: translateAmount._hex,
+                    },
+                ],
+            })
+            .then(() => {
+                cryptolandContract
+                    .initiateTransfer(
+                        address,
+                        translateAmount,
+                        payment_reference
+                    )
+                    .then((cryptolandContract) => {
+                        console.log(cryptolandContract);
+                        const cryptolandHash = cryptolandContract;
 
-                            setIsLoading(true);
-                            console.log(`Loading - ${cryptolandHash.hash}`);
-                            cryptolandHash
-                                .wait()
-                                .then(() => {
-                                    setIsLoading(false);
-                                    console.log(
-                                        `Success- ${cryptolandHash.hash}`
-                                    );
-                                })
-                                .then(() => {
-                                    window.location.reload();
-                                });
-                        })
-                        .catch(console.log);
-                });
-        } else {
-            setMetaMask(false);
-        }
+                        setIsLoading(true);
+                        console.log(`Loading - ${cryptolandHash.hash}`);
+                        cryptolandHash
+                            .wait()
+                            .then(() => {
+                                setIsLoading(false);
+                                console.log(`Success- ${cryptolandHash.hash}`);
+                            })
+                            .then(() => {
+                                window.location.reload();
+                            });
+                    })
+                    .catch(console.log);
+            });
     };
 
     const chainChangedHandler = () => {
