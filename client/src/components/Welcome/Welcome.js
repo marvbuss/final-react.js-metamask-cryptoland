@@ -9,6 +9,7 @@ function Welcome() {
         walletAddress,
         walletBalance,
         formData,
+        isLoading,
         handleChange,
         connectWalletHandler,
         initiateTransferHandler,
@@ -81,7 +82,13 @@ function Welcome() {
                                     handleChange({ target })
                                 }
                             />
-                            <button onClick={handleSubmit}>Transfer Now</button>
+                            {!isLoading ? (
+                                <button onClick={handleSubmit}>
+                                    Transfer Now
+                                </button>
+                            ) : (
+                                <button>Loading...</button>
+                            )}
                         </form>
                     </div>
                 </div>

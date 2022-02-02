@@ -143,7 +143,6 @@ export const CryptolandProvider = ({ children }) => {
                         payment_reference
                     )
                     .then((cryptolandContract) => {
-                        console.log(cryptolandContract);
                         const cryptolandHash = cryptolandContract;
 
                         setIsLoading(true);
