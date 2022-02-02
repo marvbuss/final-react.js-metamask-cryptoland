@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { CryptolandsContext } from "../../context/CryptolandContext";
 import Cryptoland from "../Cryptoland/Cryptoland";
-import dummyData from "../../utils/dummyData";
 
 const TransferCard = ({
     addressFrom,
@@ -12,7 +11,7 @@ const TransferCard = ({
 }) => {
     return (
         <div className="payment-card">
-            <div className="transaction-input">
+            <div className="payment-input">
                 <a
                     href={`https://ropsten.etherscan.io/address/${addressFrom}`}
                     target="_blank"
@@ -39,6 +38,7 @@ const TransferCard = ({
 function Transfers() {
     const { walletAddress } = useContext(CryptolandsContext);
     const { transfers } = useContext(CryptolandsContext);
+
     return (
         <>
             <div className="transfer-container">
@@ -48,7 +48,7 @@ function Transfers() {
                     <h1>Connect your Wallet to see the Latest Transfers</h1>
                 )}
                 <div className="transfer-wrapper">
-                    {dummyData.reverse().map((transfer, i) => {
+                    {transfers.map((transfer, i) => {
                         return <TransferCard key={i} {...transfer} />;
                     })}
                 </div>

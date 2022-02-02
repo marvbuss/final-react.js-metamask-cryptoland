@@ -38,11 +38,6 @@ export const CryptolandProvider = ({ children }) => {
         }));
     };
 
-    useEffect(() => {
-        checkIfMetaMaskIsInstalled();
-        checkIfWalletIsConnected();
-    }, []);
-
     const checkIfMetaMaskIsInstalled = () => {
         if (typeof ethereum == "undefined") {
             return setMetaMask(false);
@@ -70,6 +65,11 @@ export const CryptolandProvider = ({ children }) => {
             .catch(console.log);
     };
 
+    useEffect(() => {
+        checkIfMetaMaskIsInstalled();
+        checkIfWalletIsConnected();
+    });
+
     const getAllTransfers = async () => {
         try {
             if (typeof ethereum == "undefined") return setMetaMask(false);
@@ -84,6 +84,7 @@ export const CryptolandProvider = ({ children }) => {
                 payment_reference: payment.payment_reference,
                 amount: parseInt(payment.amount._hex) / hexNumberHelper,
             }));
+            structuredTransfers.reverse();
             setTransfers(structuredTransfers);
         } catch (err) {
             console.log(err);
@@ -145,12 +146,10 @@ export const CryptolandProvider = ({ children }) => {
                         const cryptolandHash = cryptolandContract;
 
                         setIsLoading(true);
-                        console.log(`Loading - ${cryptolandHash.hash}`);
                         cryptolandHash
                             .wait()
                             .then(() => {
                                 setIsLoading(false);
-                                console.log(`Success- ${cryptolandHash.hash}`);
                             })
                             .then(() => {
                                 window.location.reload();
@@ -164,7 +163,7 @@ export const CryptolandProvider = ({ children }) => {
         window.location.reload();
     };
 
-    ethereum.on("accountsChanged", walletChangedHandler);
+    ethereum.on("accountsChanged", connectWalletHandler);
     ethereum.on("chainChanged", chainChangedHandler);
 
     return (
