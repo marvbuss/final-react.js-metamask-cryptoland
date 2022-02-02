@@ -8,14 +8,14 @@ function Navbar() {
                     <img src="/images/ethereum-colored.svg" alt="logo" />
                 </NavLink>
                 <div className="navbar-menu">
-                    <NavLink to="/market" className="navbar-link">
-                        Market
+                    <NavLink to="/community" className="navbar-link">
+                        Community
                     </NavLink>
                     <NavLink to="/nfts" className="navbar-link">
                         NFTs
                     </NavLink>
-                    <NavLink to="/wallets" className="navbar-link">
-                        Wallets
+                    <NavLink to="/roadmap" className="navbar-link">
+                        Roadmap
                     </NavLink>
                 </div>
                 <button className="navbar-btn">

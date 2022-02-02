@@ -31,7 +31,8 @@ function Welcome() {
                             Transfer Crypto <br /> across the world
                         </h1>
                         <p>
-                            Discover the crypto world. <br />
+                            Discover the crypto world and join the movement.
+                            <br />
                             Make your payments with cryptocurrency via Crypto
                             Land.
                         </p>
