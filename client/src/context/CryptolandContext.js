@@ -64,7 +64,7 @@ export const CryptolandProvider = ({ children }) => {
 
                     getAllTransfers();
                 } else {
-                    console.log("No accounts found");
+                    console.log("No connected account");
                 }
             })
             .catch(console.log);
