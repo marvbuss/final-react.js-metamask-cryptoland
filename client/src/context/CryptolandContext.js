@@ -47,6 +47,7 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const checkIfWalletIsConnected = () => {
+        if (typeof ethereum == "undefined") return setMetaMask(false);
         ethereum
             .request({
                 method: "eth_accounts",
