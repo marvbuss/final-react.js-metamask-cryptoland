@@ -47,7 +47,7 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const checkIfWalletIsConnected = () => {
-        if (typeof ethereum == "undefined") return setMetaMask(false);
+        if (typeof ethereum == "undefined") return;
         ethereum
             .request({
                 method: "eth_accounts",
@@ -72,7 +72,7 @@ export const CryptolandProvider = ({ children }) => {
 
     const getAllTransfers = async () => {
         try {
-            if (typeof ethereum == "undefined") return setMetaMask(false);
+            if (typeof ethereum == "undefined") return;
             const cryptolandContract = getEthereumContract();
             const getAllPayments = await cryptolandContract.getAllPayments();
             const structuredTransfers = getAllPayments.map((payment) => ({
@@ -92,7 +92,7 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const connectWalletHandler = () => {
-        if (typeof ethereum == "undefined") return setMetaMask(false);
+        if (typeof ethereum == "undefined") return;
         ethereum
             .request({ method: "eth_requestAccounts" })
             .then((result) => {
@@ -118,7 +118,7 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const initiateTransferHandler = () => {
-        if (typeof ethereum == "undefined") return setMetaMask(false);
+        if (typeof ethereum == "undefined") return;
         const { address, amount, payment_reference } = formData;
         const cryptolandContract = getEthereumContract();
         const translateAmount = ethers.utils.parseEther(amount);
@@ -146,14 +146,10 @@ export const CryptolandProvider = ({ children }) => {
                         const cryptolandHash = cryptolandContract;
 
                         setIsLoading(true);
-                        cryptolandHash
-                            .wait()
-                            .then(() => {
-                                setIsLoading(false);
-                            })
-                            .then(() => {
-                                window.location.reload();
-                            });
+                        cryptolandHash.wait().then(() => {
+                            setIsLoading(false);
+                            window.location.reload();
+                        });
                     })
                     .catch(console.log);
             });

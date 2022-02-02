@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { CryptolandsContext } from "../../context/CryptolandContext";
-import Cryptoland from "../Cryptoland/Cryptoland";
+import Cryptoland from "../cryptoland/Cryptoland";
 
 const TransferCard = ({
     addressFrom,
