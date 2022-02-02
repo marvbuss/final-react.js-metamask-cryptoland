@@ -47,8 +47,6 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const checkIfWalletIsConnected = () => {
-        if (typeof ethereum == "undefined") return setMetaMask(false);
-
         ethereum
             .request({
                 method: "eth_accounts",
@@ -56,8 +54,6 @@ export const CryptolandProvider = ({ children }) => {
             .then((result) => {
                 if (result.length) {
                     walletChangedHandler(result[0]);
-
-                    getAllTransfers();
                 } else {
                     console.log("No connected account");
                 }
@@ -67,8 +63,11 @@ export const CryptolandProvider = ({ children }) => {
 
     useEffect(() => {
         checkIfMetaMaskIsInstalled();
+    }, []);
+
+    useEffect(() => {
         checkIfWalletIsConnected();
-    });
+    }, []);
 
     const getAllTransfers = async () => {
         try {
@@ -112,6 +111,7 @@ export const CryptolandProvider = ({ children }) => {
             .request({ method: "eth_getBalance", params: [wallet, "latest"] })
             .then((result) => {
                 setWalletBalance(ethers.utils.formatEther(result));
+                getAllTransfers();
             })
             .catch(console.log);
     };
