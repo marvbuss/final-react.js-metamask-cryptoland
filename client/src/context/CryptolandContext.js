@@ -4,8 +4,10 @@ import { contractABI, contractAddress } from "../utils/constants";
 
 export const CryptolandsContext = React.createContext();
 
+const { ethereum } = window;
+
 const getEthereumContract = () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
     const cryptolandContract = new ethers.Contract(
         contractAddress,
@@ -25,6 +27,7 @@ export const CryptolandProvider = ({ children }) => {
         amount: "",
         payment_reference: "",
     });
+    const [isConnecting, setIsConnecting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [transfers, setTransfers] = useState([]);
 
@@ -40,9 +43,9 @@ export const CryptolandProvider = ({ children }) => {
     }, []);
 
     const checkIfWalletIsConnected = () => {
-        if (typeof window.ethereum == "undefined") return setMetaMask(false);
+        if (typeof ethereum == "undefined") return setMetaMask(false);
 
-        window.ethereum
+        ethereum
             .request({
                 method: "eth_accounts",
             })
@@ -60,7 +63,7 @@ export const CryptolandProvider = ({ children }) => {
 
     const getAllTransfers = async () => {
         try {
-            if (typeof window.ethereum !== "undefined") {
+            if (typeof ethereum !== "undefined") {
                 const cryptolandContract = getEthereumContract();
                 const getAllPayments =
                     await cryptolandContract.getAllPayments();
@@ -84,8 +87,8 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const connectWalletHandler = () => {
-        if (typeof window.ethereum !== "undefined") {
-            window.ethereum
+        if (typeof ethereum !== "undefined") {
+            ethereum
                 .request({ method: "eth_requestAccounts" })
                 .then((result) => {
                     //result gives back an array of accounts
@@ -103,7 +106,7 @@ export const CryptolandProvider = ({ children }) => {
     };
 
     const walletBalanceHandler = (wallet) => {
-        window.ethereum
+        ethereum
             .request({ method: "eth_getBalance", params: [wallet, "latest"] })
             .then((result) => {
                 setWalletBalance(ethers.utils.formatEther(result));
@@ -111,20 +114,13 @@ export const CryptolandProvider = ({ children }) => {
             .catch(console.log);
     };
 
-    const chainChangedHandler = () => {
-        window.location.reload();
-    };
-
-    window.ethereum.on("accountsChanged", walletChangedHandler);
-    window.ethereum.on("chainChanged", chainChangedHandler);
-
     const initiateTransferHandler = () => {
-        if (typeof window.ethereum !== "undefined") {
+        if (typeof ethereum !== "undefined") {
             const { address, amount, payment_reference } = formData;
             const cryptolandContract = getEthereumContract();
             const translateAmount = ethers.utils.parseEther(amount);
 
-            window.ethereum
+            ethereum
                 .request({
                     method: "eth_sendTransaction",
                     params: [
@@ -167,6 +163,13 @@ export const CryptolandProvider = ({ children }) => {
             setMetaMask(false);
         }
     };
+
+    const chainChangedHandler = () => {
+        window.location.reload();
+    };
+
+    ethereum.on("accountsChanged", walletChangedHandler);
+    ethereum.on("chainChanged", chainChangedHandler);
 
     return (
         <CryptolandsContext.Provider
